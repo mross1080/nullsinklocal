@@ -12,7 +12,9 @@ import org.springframework.cloud.stream.binder.BinderFactory;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.integration.channel.NullChannel;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -65,16 +67,16 @@ public class MyNullSinkApplicationTests {
         assertFalse(file.exists());
         String uniqueId = UUID.randomUUID().toString();
         System.out.println(uniqueId);
-
-
         PrintStream out = new PrintStream(new FileOutputStream(ROOT_DIR));
         System.setOut(out);
 
-        out.close();
+
+        assertTrue(this.sink.input().send((new GenericMessage<Object>(uniqueId))));
+
         BufferedReader br = null;
 
         Boolean foundNullChannelOutPutFlag = false;
-        assertTrue(file.exists());
+//        assertTrue(file.exists());
 
         try {
 
@@ -92,6 +94,7 @@ public class MyNullSinkApplicationTests {
         }
 
         assertTrue(foundNullChannelOutPutFlag);
+        out.close();
 
 
 
